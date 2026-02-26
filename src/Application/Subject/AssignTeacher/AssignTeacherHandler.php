@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Subject;
+namespace App\Application\Subject\AssignTeacher;
 
 use App\Domain\Subject\SubjectId;
 use App\Domain\Teacher\TeacherId;
@@ -14,8 +14,7 @@ class AssignTeacherHandler {
         public readonly TeacherRepository $teacherRepository
     ) {}
 
-    public function handle(AssignTeacherCommand $command): void
-    {
+    public function handle(AssignTeacherCommand $command): void {
         $subject = $this->subjectRepository->find(new SubjectId($command->subjectId));
         if (!$subject) {
             throw new \RuntimeException('Subject not found');
@@ -26,6 +25,7 @@ class AssignTeacherHandler {
             throw new \RuntimeException('Teacher not found');
         }
 
+        $subject->unassignTeacher();
         $subject->assignTeacher(new TeacherId($command->teacherId));
 
         $this->subjectRepository->save($subject);

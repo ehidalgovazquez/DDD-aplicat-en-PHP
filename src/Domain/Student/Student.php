@@ -7,8 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'students')]
-final class Student
-{
+final class Student {
     #[ORM\Id]
     #[ORM\Column(type: 'string', length: 36)]
     private string $id;
@@ -20,31 +19,40 @@ final class Student
     private string $email;
 
     #[ORM\Column(type: 'string', length: 36, nullable: true)]
-    private ?string $courseId = null;
+    private ?CourseId $courseId = null;
 
-    public function __construct(StudentId $id, string $name, string $email)
-    {
+    public function __construct(StudentId $id, string $name, string $email) {
         $this->id = $id->value();
         $this->name = $name;
         $this->email = $email;
     }
 
     public function enrollInto(CourseId $courseId): void {
-        if ($this->courseId !== null) {
-            throw new \DomainException("Student is already enrolled in a course.");
-        }
-        
-        $this->courseId = $courseId->value();
+        $this->courseId = $courseId;
     }
 
     public function unenroll(): void {
         $this->courseId = null;
     }
 
-    public function id(): StudentId { return new StudentId($this->id); }
-    public function name(): string { return $this->name; }
-    public function email(): string { return $this->email; }
+    public function id(): StudentId {
+        return new StudentId($this->id);
+    }
+
+    public function name(): string {
+        return $this->name;
+    }
+
+    public function email(): string {
+        return $this->email;
+    }
+    
     public function courseId(): ?CourseId { 
-        return $this->courseId ? new CourseId($this->courseId) : null; 
+        return $this->courseId; 
+    }
+
+    public function update(string $name, string $email): void {
+        $this->name = $name;
+        $this->email = $email;
     }
 }

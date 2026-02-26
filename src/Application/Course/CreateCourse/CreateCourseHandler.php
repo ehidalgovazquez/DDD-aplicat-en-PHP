@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Course;
+namespace App\Application\Course\CreateCourse;
 
 use App\Domain\Course\Course;
 use App\Domain\Course\CourseId;
@@ -12,13 +12,14 @@ class CreateCourseHandler {
         public readonly CourseRepository $courseRepository
     ) {}
 
-    public function handle(CreateCourseCommand $command): void
-    {
-        $course = new Course(
-            new CourseId($command->id),
-            $command->name
-        );
+    public function handle(CreateCourseCommand $command): void {
+        $courseId = new CourseId($command->id);
 
+        if ($this->courseRepository->find($courseId) !== null) {
+            throw new \RuntimeException("El curs amb ID '" . $command->id . "' ja existeix.");
+        }
+
+        $course = new Course($courseId, $command->name);
         $this->courseRepository->save($course);
     }
 }

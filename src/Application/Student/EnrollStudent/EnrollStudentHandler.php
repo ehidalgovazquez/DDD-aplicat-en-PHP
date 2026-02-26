@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Student;
+namespace App\Application\Student\EnrollStudent;
 
 use App\Domain\Student\StudentId;
 use App\Domain\Course\CourseId;
@@ -14,20 +14,22 @@ class EnrollStudentHandler {
         public readonly CourseRepository $courseRepository
     ) {}
 
-    public function handle(EnrollStudentCommand $command): void
-    {
+    public function handle(EnrollStudentCommand $command): void{
         $student = $this->studentRepository->find(new StudentId($command->studentId));
         if (!$student) {
             throw new \RuntimeException('Student not found');
         }
 
-        $course = $this->courseRepository->find(new CourseId($command->courseId));
-        if (!$course) {
-            throw new \RuntimeException('Course not found');
+        if($command->courseId != null) {
+            $course = $this->courseRepository->find(new CourseId($command->courseId));
+            if (!$course) {
+                throw new \RuntimeException('Course not found');
+            }
+            $student->enrollInto($course->id());
+        } else {
+            $student->unenroll();
         }
 
-        $student->enrollInto($course->id());
-
-        $this->studentRepository->save($student);
+        $this->studentRepository->update($student);
     }
 }

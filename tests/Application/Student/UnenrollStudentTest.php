@@ -7,7 +7,7 @@ use App\Domain\Student\Student;
 use App\Domain\Student\StudentId;
 use App\Domain\Course\CourseId;
 use App\Domain\Student\StudentRepository;
-use App\Application\Student\UnenrollStudentHandler;
+use App\Application\Student\UnenrollStudent\UnenrollStudentHandler;
 use App\Application\Student\UnenrollStudent\UnenrollStudentCommand;
 
 final class UnenrollStudentTest extends TestCase

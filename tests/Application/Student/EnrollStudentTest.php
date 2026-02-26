@@ -9,7 +9,7 @@ use App\Domain\Course\Course;
 use App\Domain\Course\CourseId;
 use App\Domain\Student\StudentRepository;
 use App\Domain\Course\CourseRepository;
-use App\Application\Student\EnrollStudentHandler;
+use App\Application\Student\EnrollStudent\EnrollStudentHandler;
 use App\Application\Student\EnrollStudent\EnrollStudentCommand;
 
 final class EnrollStudentTest extends TestCase
@@ -32,7 +32,7 @@ final class EnrollStudentTest extends TestCase
         $studentRepository->method('find')->willReturn($student);
         $courseRepository->method('find')->willReturn($course);
 
-        $studentRepository->expects($this->once())->method('save');
+        $studentRepository->expects($this->once())->method('update');
 
         $handler = new EnrollStudentHandler($studentRepository, $courseRepository);
         $command = new EnrollStudentCommand($studentId, $courseId);
@@ -62,5 +62,25 @@ final class EnrollStudentTest extends TestCase
         $this->expectExceptionMessage('Course not found');
 
         $handler->handle(new EnrollStudentCommand($studentId, 'missing-course'));
+    }
+
+    public function test_it_throws_exception_if_student_not_found(): void
+    {
+        $courseId = 'course-1';
+        $courseName = 'PHP DDD';
+        $course = new Course(new CourseId($courseId), $courseName);
+        
+        $studentRepository = $this->createMock(StudentRepository::class);
+        $courseRepository = $this->createMock(CourseRepository::class);
+
+        $studentRepository->method('find')->willReturn(null);
+        $courseRepository->method('find')->willReturn($course);
+
+        $handler = new EnrollStudentHandler($studentRepository, $courseRepository);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Student not found');
+
+        $handler->handle(new EnrollStudentCommand('missing-student', $courseId));
     }
 }

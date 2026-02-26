@@ -6,27 +6,43 @@ use PHPUnit\Framework\TestCase;
 use App\Domain\Subject\Subject;
 use App\Domain\Subject\SubjectId;
 use App\Domain\Subject\SubjectRepository;
-use App\Application\Subject\CreateSubjectHandler;
+use App\Application\Subject\CreateSubject\CreateSubjectHandler;
 use App\Application\Subject\CreateSubject\CreateSubjectCommand;
 
 final class CreateSubjectTest extends TestCase
 {
-    public function test_it_should_create_a_subject(): void
+    private $repository;
+    private $handler;
+
+    protected function setUp(): void
     {
-        $subjectId = 'subject-1';
-        $name = 'Matemáticas';
+        $this->repository = $this->createMock(SubjectRepository::class);
+        $this->handler = new CreateSubjectHandler($this->repository);
+    }
 
-        $subject = new Subject(new SubjectId($subjectId), $name);
+    public function test_it_should_create_a_subject_successfully(): void
+    {
+        $command = new CreateSubjectCommand('subj-1', 'Matemàtiques', 'teacher-1');
 
-        $subjectRepository = $this->createMock(SubjectRepository::class);
-        $subjectRepository->method('find')->willReturn($subject); 
-        $subjectRepository->expects($this->once())->method('save');
+        // Escenario positivo: el repositorio no devuelve nada
+        $this->repository->method('find')->willReturn(null);
+        $this->repository->expects($this->once())->method('save');
 
-        $handler = new CreateSubjectHandler($subjectRepository);
-        $command = new CreateSubjectCommand($subjectId, $name);
+        $this->handler->handle($command);
+    }
 
-        $handler->handle($command);
+    public function test_it_should_throw_exception_when_subject_already_exists(): void
+    {
+        $id = 'subj-1';
+        $command = new CreateSubjectCommand($id, 'Matemàtiques');
         
-        $this->assertTrue(true);
+        $existingSubject = new Subject(new SubjectId($id), 'Nombre Existente');
+        
+        $this->repository->method('find')->willReturn($existingSubject);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("L'assignatura ja existeix.");
+
+        $this->handler->handle($command);
     }
 }

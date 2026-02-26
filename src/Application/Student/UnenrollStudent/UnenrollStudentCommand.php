@@ -2,10 +2,8 @@
 
 namespace App\Application\Student\UnenrollStudent;
 
-final class UnenrollStudentCommand
-{
+final class UnenrollStudentCommand {
     public function __construct(
         public readonly string $studentId
-    ) {
-    }
+    ) {}
 }

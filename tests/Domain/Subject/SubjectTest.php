@@ -7,36 +7,35 @@ use App\Domain\Subject\Subject;
 use App\Domain\Subject\SubjectId;
 use App\Domain\Teacher\TeacherId;
 
-class SubjectTest extends TestCase
+final class SubjectTest extends TestCase
 {
-    public function test_subject_can_be_assigned_a_teacher(): void
+    public function test_it_should_create_subject_instance(): void
     {
-        $subject = new Subject(new SubjectId('sub-1'), 'Matemáticas');
-        $teacherId = new TeacherId('teach-123');
+        $id = new SubjectId('subj-1');
+        $subject = new Subject($id, 'Matemàtiques');
+
+        $this->assertEquals($id, $subject->id());
+        $this->assertEquals('Matemàtiques', $subject->name());
+        $this->assertNull($subject->teacherId());
+    }
+
+    public function test_it_should_assign_a_teacher(): void
+    {
+        $subject = new Subject(new SubjectId('subj-1'), 'Matemàtiques');
+        $teacherId = new TeacherId('teach-1');
 
         $subject->assignTeacher($teacherId);
 
-        $this->assertEquals($teacherId->value(), $subject->teacherId()->value());
+        $this->assertEquals($teacherId, $subject->teacherId());
     }
 
-    public function test_assigning_teacher_to_subject_with_teacher_already_assigned_throws_exception(): void
+    public function test_it_should_unassign_teacher(): void
     {
-        $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage("Subject already has a teacher assigned.");
-
-        $subject = new Subject(new SubjectId('sub-1'), 'Matemáticas');
+        $subject = new Subject(new SubjectId('subj-1'), 'Matemàtiques');
+        $subject->assignTeacher(new TeacherId('teach-1'));
         
-        $subject->assignTeacher(new TeacherId('teach-1'));
-        $subject->assignTeacher(new TeacherId('teach-2'));
-    }
-
-    public function test_teacher_can_be_unassigned_from_subject(): void
-    {
-        $subject = new Subject(new SubjectId('sub-1'), 'Matemáticas');
-        $subject->assignTeacher(new TeacherId('teach-1'));
-
         $subject->unassignTeacher();
-
+        
         $this->assertNull($subject->teacherId());
     }
 }

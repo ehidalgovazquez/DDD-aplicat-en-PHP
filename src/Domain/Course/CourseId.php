@@ -2,29 +2,24 @@
 
 namespace App\Domain\Course;
 
-final class CourseId
-{
-    public function __construct(private string $value)
-    {
+final class CourseId {
+    public function __construct(private string $value) {
         if ($value === '') {
             throw new \InvalidArgumentException('CourseId cannot be empty');
         }
     }
     
-    public static function generate(): self
-    {
+    public static function generate(): self {
         return new self(
             uniqid('course_', true)
         );
     }
 
-    public function value(): string
-    {
+    public function value(): string {
         return $this->value;
     }
 
-    public function __toString(): string
-    {
+    public function __toString(): string {
         return $this->value;
     }
 }

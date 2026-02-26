@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Teacher;
+namespace App\Application\Teacher\CreateTeacher;
 
 use App\Domain\Teacher\Teacher;
 use App\Domain\Teacher\TeacherId;
@@ -12,8 +12,14 @@ class CreateTeacherHandler {
         public readonly TeacherRepository $teacherRepository
     ) {}
 
-    public function handle(CreateTeacherCommand $command): void
+    public function handle(CreateTeacherCommand $command): void 
     {
+        $existingTeacher = $this->teacherRepository->find(new TeacherId($command->id));
+
+        if ($existingTeacher !== null) {
+            throw new \RuntimeException("El professor amb ID '{$command->id}' ja existeix.");
+        }
+
         $teacher = new Teacher(
             new TeacherId($command->id),
             $command->name,

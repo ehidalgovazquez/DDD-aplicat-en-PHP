@@ -6,4 +6,6 @@ interface StudentRepository
 {
     public function find(StudentId $id): ?Student;
     public function save(Student $student): void;
+    public function update(Student $student): void;
+    public function delete(StudentId $id): void;
 }

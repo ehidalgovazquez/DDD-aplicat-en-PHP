@@ -23,7 +23,7 @@ return [
 	'Cassandra\\Exception\\AuthenticationException::__construct' => ['hasSideEffects' => false],
 	'Cassandra\\Exception\\ConfigurationException::__construct' => ['hasSideEffects' => false],
 	'Cassandra\\Exception\\DivideByZeroException::__construct' => ['hasSideEffects' => false],
-	'Cassandra\\Exception\\DomainException::__construct' => ['hasSideEffects' => false],
+	'Cassandra\\Exception\\RuntimeException::__construct' => ['hasSideEffects' => false],
 	'Cassandra\\Exception\\ExecutionException::__construct' => ['hasSideEffects' => false],
 	'Cassandra\\Exception\\InvalidArgumentException::__construct' => ['hasSideEffects' => false],
 	'Cassandra\\Exception\\InvalidQueryException::__construct' => ['hasSideEffects' => false],

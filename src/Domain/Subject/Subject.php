@@ -43,4 +43,8 @@ final class Subject
     public function teacherId(): ?TeacherId { 
         return $this->teacherId ? new TeacherId($this->teacherId) : null; 
     }
+
+    public function update(string $name): void {
+        $this->name = $name;
+    }
 }
