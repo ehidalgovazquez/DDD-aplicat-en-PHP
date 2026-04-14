@@ -23,8 +23,7 @@ final class StudentApiController {
     private RequestAPI $request;
     private EntityManagerInterface $entityManager;
 
-    public function __construct(RequestAPI $request, EntityManagerInterface $entityManager)
-    {
+    public function __construct(RequestAPI $request, EntityManagerInterface $entityManager) {
         $this->request = $request;
         $this->entityManager = $entityManager;
     }
@@ -128,16 +127,17 @@ final class StudentApiController {
         }
     }
 
-    public function enroll(RequestAPI $request): void {
+    public function enroll(RequestAPI $request, ?string $id = null): void {
         $entityManager = $this->getEntityManager();
         $studentRepo = new SqlStudentRepository($entityManager);
         $courseRepo = new SqlCourseRepository($entityManager);
         $handler = new EnrollStudentHandler($studentRepo, $courseRepo);
         $body = $request->getBody();
+        $studentId = $id ?? $body['student_id'] ?? '';
 
         try {
             $handler->handle(new EnrollStudentCommand(
-                $body['student_id'] ?? '',
+                $studentId,
                 $body['course_id'] ?? ''
             ));
             (new ResponseJson(200, "Estudiant inscrit al curs correctament"))->send();
@@ -146,16 +146,17 @@ final class StudentApiController {
         }
     }
 
-    public function unenroll(RequestAPI $request): void {
+    public function unenroll(RequestAPI $request, ?string $id = null): void {
         $entityManager = $this->getEntityManager();
         $studentRepo = new SqlStudentRepository($entityManager);
         $courseRepo = new SqlCourseRepository($entityManager);
         $handler = new UnenrollStudentHandler($studentRepo, $courseRepo);
         $body = $request->getBody();
+        $studentId = $id ?? $body['student_id'] ?? '';
 
         try {
             $handler->handle(new UnenrollStudentCommand(
-                $body['student_id'] ?? '',
+                $studentId,
                 $body['course_id'] ?? ''
             ));
             (new ResponseJson(200, "Estudiant desinscrit del curs correctament"))->send();
