@@ -1,0 +1,27 @@
+### Crear Teacher
+POST http://localhost:8000/api/teachers
+Content-Type: application/json
+
+{
+    "id": "TEA-001",
+    "name": "Anna Mestre",
+    "email": "anna.mestre@example.com"
+}
+
+### Obtener Teacher por ID
+GET http://localhost:8000/api/teachers/TEA-001
+
+### Lista de Teachers
+GET http://localhost:8000/api/teachers
+
+### Actualizar Teacher
+PUT http://localhost:8000/api/teachers/TEA-001
+Content-Type: application/json
+
+{
+    "name": "Anna Mestre Updated",
+    "email": "anna.mestre.updated@example.com"
+}
+
+### Eliminar Teacher
+DELETE http://localhost:8000/api/teachers/TEA-001
