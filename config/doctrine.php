@@ -15,13 +15,22 @@ $isDevMode = true;
 
 $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 
-$connectionParams = [
-    'dbname'   => $_ENV['DB_NAME'] ?? 'school_management',
-    'user'     => $_ENV['DB_USER'] ?? 'root',
-    'password' => $_ENV['DB_PASS'] ?? '',
-    'host'     => $_ENV['DB_HOST'] ?? '127.0.0.1',
-    'driver'   => $_ENV['DB_DRIVER'] ?? 'pdo_mysql',
-];
+$driver = $_ENV['DB_DRIVER'] ?? 'pdo_mysql';
+
+if ($driver === 'pdo_sqlite') {
+    $connectionParams = [
+        'driver' => 'pdo_sqlite',
+        'path' => __DIR__ . '/../' . ($_ENV['DB_PATH'] ?? 'database.sqlite'),
+    ];
+} else {
+    $connectionParams = [
+        'dbname'   => $_ENV['DB_NAME'] ?? 'school_management',
+        'user'     => $_ENV['DB_USER'] ?? 'root',
+        'password' => $_ENV['DB_PASS'] ?? '',
+        'host'     => $_ENV['DB_HOST'] ?? '127.0.0.1',
+        'driver'   => $driver,
+    ];
+}
 
 $connection = DriverManager::getConnection($connectionParams, $config);
 

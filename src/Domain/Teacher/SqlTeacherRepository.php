@@ -2,76 +2,40 @@
 
 namespace App\Domain\Teacher;
 
-use App\Domain\Teacher\Teacher;
-use App\Domain\Teacher\TeacherId;
-use App\Domain\Teacher\TeacherRepository;
-use PDO;
+use Doctrine\ORM\EntityManagerInterface;
 
-final class SqlTeacherRepository implements TeacherRepository
+final class SqlTeacherRepository implements TeacherRepository 
 {
-    public function __construct(private readonly PDO $connection) {}
+    private EntityManagerInterface $entityManager;
 
-    public function find(TeacherId $id): ?Teacher
-    {
-        $stmt = $this->connection->prepare("SELECT * FROM teachers WHERE id = :id");
-        $stmt->execute(['id' => $id->value()]);
+    public function __construct(EntityManagerInterface $entityManager) {
+        $this->entityManager = $entityManager;
+    }
+
+    public function find(TeacherId $id): ?Teacher {
+        return $this->entityManager->find(Teacher::class, $id->value());
+    }
+
+    public function save(Teacher $teacher): void {
+        $this->entityManager->persist($teacher);
+        $this->entityManager->flush();
+    }
+
+    public function update(Teacher $teacher): void {
+        $this->entityManager->persist($teacher);
+        $this->entityManager->flush();
+    }
+
+    public function delete(TeacherId $id): void {
+        $teacherReference = $this->entityManager->getReference(Teacher::class, $id->value());
         
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$row) {
-            return null;
+        if ($teacherReference !== null) {
+            $this->entityManager->remove($teacherReference);
+            $this->entityManager->flush();
         }
-
-        return new Teacher(
-            new TeacherId($row['id']),
-            $row['name'],
-            $row['email']
-        );
     }
 
-    public function save(Teacher $teacher): void
-    {
-        $stmt = $this->connection->prepare(
-            "INSERT INTO teachers (id, name, email) VALUES (:id, :name, :email)"
-        );
-        
-        $stmt->execute([
-            'id'    => $teacher->id()->value(),
-            'name'  => $teacher->name(),
-            'email' => $teacher->email()
-        ]);
-    }
-
-    public function update(Teacher $teacher): void
-    {
-        $stmt = $this->connection->prepare(
-            "UPDATE teachers SET name = :name, email = :email WHERE id = :id"
-        );
-        
-        $stmt->execute([
-            'id'    => $teacher->id()->value(),
-            'name'  => $teacher->name(),
-            'email' => $teacher->email()
-        ]);
-    }
-
-    public function delete(TeacherId $id): void
-    {
-        $stmt = $this->connection->prepare("DELETE FROM teachers WHERE id = :id");
-        $stmt->execute(['id' => $id->value()]);
-    }
-
-    public function all(): array
-    {
-        $stmt = $this->connection->query("SELECT * FROM teachers");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map(function (array $row) {
-            return new Teacher(
-                new TeacherId($row['id']),
-                $row['name'],
-                $row['email']
-            );
-        }, $rows);
+    public function all(): array {
+            return $this->entityManager->getRepository(Teacher::class)->findAll();
     }
 }

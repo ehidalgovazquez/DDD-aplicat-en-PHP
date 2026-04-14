@@ -18,8 +18,8 @@ final class Student {
     #[ORM\Column(type: 'string', unique: true)]
     private string $email;
 
-    #[ORM\Column(type: 'string', length: 36, nullable: true)]
-    private ?CourseId $courseId = null;
+    #[ORM\Column(name: 'course_id', type: 'string', nullable: true)]
+    private ?string $courseId = null;
 
     public function __construct(StudentId $id, string $name, string $email) {
         $this->id = $id->value();
@@ -28,7 +28,7 @@ final class Student {
     }
 
     public function enrollInto(CourseId $courseId): void {
-        $this->courseId = $courseId;
+        $this->courseId = $courseId->value();
     }
 
     public function unenroll(): void {
@@ -48,7 +48,7 @@ final class Student {
     }
     
     public function courseId(): ?CourseId { 
-        return $this->courseId; 
+        return $this->courseId !== null ? new CourseId($this->courseId) : null;
     }
 
     public function update(string $name, string $email): void {

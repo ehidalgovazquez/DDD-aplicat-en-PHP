@@ -3,144 +3,143 @@
 namespace App\Infrastructure\Controller;
 
 use App\Infrastructure\Http\Request;
-use App\Infrastructure\Persistence\Database;
+use App\Infrastructure\Http\ResponseJson;
 use App\Domain\Student\SqlStudentRepository;
 use App\Domain\Course\SqlCourseRepository;
 use App\Application\Student\CreateStudent\CreateStudentHandler;
 use App\Application\Student\CreateStudent\CreateStudentCommand;
-use App\Application\Student\EnrollStudent\EnrollStudentHandler;
-use App\Application\Student\EnrollStudent\EnrollStudentCommand;
 use App\Application\Student\UpdateStudent\UpdateStudentHandler;
 use App\Application\Student\UpdateStudent\UpdateStudentCommand;
 use App\Application\Student\DeleteStudent\DeleteStudentHandler;
 use App\Application\Student\DeleteStudent\DeleteStudentCommand;
+use App\Application\Student\EnrollStudent\EnrollStudentHandler;
+use App\Application\Student\EnrollStudent\EnrollStudentCommand;
+use App\Application\Student\UnenrollStudent\UnenrollStudentHandler;
+use App\Application\Student\UnenrollStudent\UnenrollStudentCommand;
 use App\Domain\Student\StudentId;
-use PDO;
+use App\Domain\Course\CourseId;
+use Doctrine\ORM\EntityManagerInterface;
 
-final class StudentController
-{
+final class StudentController {
+    private function getEntityManager(): EntityManagerInterface {
+        return require __DIR__ . '/../../../config/doctrine.php';
+    }
+
     public function index(): void {
-        $pdo = Database::getConnection();
-        $studentRepository = new SqlStudentRepository($pdo);
-        $courseRepository = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $repository = new SqlStudentRepository($entityManager);
         
-        $students = $studentRepository->all();
-        $courses = $courseRepository->all();
+        $students = $repository->all();
         include __DIR__ . '/../../templates/student/index.php';
     }
-    
+
+    public function show(Request $request): void {
+        $entityManager = $this->getEntityManager();
+        $repository = new SqlStudentRepository($entityManager);
+        $courseRepo = new SqlCourseRepository($entityManager);
+        $student = $repository->find(new StudentId($request->get('id', '')));
+        
+        if (!$student) {
+            header('Location: /student');
+            exit;
+        }
+
+        $course = null;
+        if ($student->courseId() !== null) {
+            $course = $courseRepo->find(new CourseId($student->courseId()));
+        }
+
+        include __DIR__ . '/../../templates/student/show.php';
+    }
+
     public function create(): void {
+        $entityManager = $this->getEntityManager();
+        $courseRepo = new SqlCourseRepository($entityManager);
+        $courses = $courseRepo->all();
+        
         include __DIR__ . '/../../templates/student/create.php';
     }
 
     public function store(Request $request): void {
-        $pdo = Database::getConnection();
-        $repository = new SqlStudentRepository($pdo);
-        $courseRepo = new SqlCourseRepository($pdo);
-        $handler = new CreateStudentHandler($repository, $courseRepo);
+        $entityManager = $this->getEntityManager();
+        $repository = new SqlStudentRepository($entityManager);
+        $repositoryCourse = new SqlCourseRepository($entityManager);
+        $handler = new CreateStudentHandler($repository, $repositoryCourse);
 
         try {
             $command = new CreateStudentCommand(
-                $request->get('id'),
-                $request->get('name'),
-                $request->get('email'),
-                $request->get('course_id')
+                $request->get('id', ''),
+                $request->get('name', ''),
+                $request->get('email', ''),
+                $request->get('course_id', null)
             );
-
             $handler->handle($command);
             header('Location: /student');
             exit;
-
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             header('Location: /student/create');
             exit;
         }
     }
 
-    public function enroll(Request $request): void {
-        $pdo = Database::getConnection();
-        $studentRepo = new SqlStudentRepository($pdo);
-        $courseRepo = new SqlCourseRepository($pdo);
-        
-        $handler = new EnrollStudentHandler($studentRepo, $courseRepo);
-
-        try {
-            $command = new EnrollStudentCommand(
-                $request->get('student_id'),
-                $request->get('course_id')
-            );
-
-            $handler->handle($command);
-            $_SESSION['success'] = "Matrícula actualitzada correctament!";
-        } catch (\RuntimeException $e) {
-            $_SESSION['error'] = "Error en matricular: " . $e->getMessage();
-        }
-
-        header('Location: /student');
-        exit;
-    }
-
     public function edit(Request $request): void {
-        $pdo = Database::getConnection();
-        $studentRepo = new SqlStudentRepository($pdo);
-        $courseRepo = new SqlCourseRepository($pdo);
-
-        $studentId = new StudentId($request->get('id'));
-        $student = $studentRepo->find($studentId);
+        $entityManager = $this->getEntityManager();
+        $studentRepo = new SqlStudentRepository($entityManager);
+        $courseRepo = new SqlCourseRepository($entityManager);
+        $student = $studentRepo->find(new StudentId($request->get('id', '')));
+        $courses = $courseRepo->all();
 
         if (!$student) {
-            $_SESSION['error'] = "Estudiant no trobat.";
             header('Location: /student');
             exit;
         }
-
-        $courses = $courseRepo->all();
 
         include __DIR__ . '/../../templates/student/edit.php';
     }
 
     public function update(Request $request): void {
-        $pdo = Database::getConnection();
-        $studentRepo = new SqlStudentRepository($pdo);
-        $courseRepo = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $studentRepo = new SqlStudentRepository($entityManager);
+        $courseRepo = new SqlCourseRepository($entityManager);
         
-        $handler = new UpdateStudentHandler($studentRepo, $courseRepo);
-
         try {
-            $command = new UpdateStudentCommand(
-                $request->get('id'),
-                $request->get('name'),
-                $request->get('email'),
-                $request->get('course_id')
-            );
-
-            $handler->handle($command);
+            $handler = new UpdateStudentHandler($studentRepo, $courseRepo);
             
-            $_SESSION['success'] = "Estudiant actualitzat correctament!";
+            $handler->handle(new UpdateStudentCommand(
+                $request->get('id', ''),
+                $request->get('name', ''),
+                $request->get('email', ''),
+                $request->get('course_id', null)
+            ));
+
+            $student = $studentRepo->find(new StudentId($request->get('id', '')));
+            $newCourseId = $request->get('course_id', null);
+
+            if (empty($newCourseId) && $student->courseId() !== null) {
+                $unenrollHandler = new UnenrollStudentHandler($studentRepo);
+                $unenrollHandler->handle(new UnenrollStudentCommand($student->id()->value()));
+            } elseif (!empty($newCourseId)) {
+                $enrollHandler = new EnrollStudentHandler($studentRepo, $courseRepo);
+                $enrollHandler->handle(new EnrollStudentCommand($student->id()->value(), $newCourseId));
+            }
+
             header('Location: /student');
             exit;
-
-        } catch (\RuntimeException $e) {
-            $_SESSION['error'] = "Error al actualizar: " . $e->getMessage();
-            header('Location: /student/edit?id=' . $request->get('id'));
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            header('Location: /student/edit?id=' . $request->get('id', ''));
             exit;
         }
     }
 
     public function delete(Request $request): void {
-        $pdo = Database::getConnection();
-        $repository = new SqlStudentRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $repository = new SqlStudentRepository($entityManager);
         $handler = new DeleteStudentHandler($repository);
-
         try {
-            $command = new DeleteStudentCommand(
-                $request->get('id')
-            );
-
-            $handler->handle($command);
-            $_SESSION['success'] = "Estudiant eliminat correctament.";
-        } catch (\RuntimeException $e) {
+            $handler->handle(new DeleteStudentCommand($request->get('id', '')));
+        } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
         }
 

@@ -1,0 +1,34 @@
+### Crea Student
+POST http://localhost:8000/api/students
+Content-Type: application/json
+
+{
+    "id": "STU-001",
+    "name": "John Doe",
+    "email": "john.doe@gmail.com"
+}
+
+### Obtenir Student per ID
+GET http://localhost:8000/api/students/STU-001
+
+### Llista de Students
+GET http://localhost:8000/api/students  
+
+### Enroll Student a Subject
+POST http://localhost:8000/api/students/STU-001/enroll
+Content-Type: application/json
+
+{
+    "course_id": "DAW"
+}
+
+### Unenroll Student de Subject
+POST http://localhost:8000/api/students/STU-001/unenroll
+Content-Type: application/json
+
+{
+    "course_id": "DAW"
+}
+
+### Eliminar Student
+DELETE http://localhost:8000/api/students/STU-001
