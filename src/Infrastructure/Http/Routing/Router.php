@@ -22,7 +22,8 @@
                     $found = true;
                     [$controllerClass, $action] = $route['handler'];
                     $controller = new $controllerClass($request, $em);
-                    call_user_func_array([$controller, $action], $params);
+                    $actionArgs = array_merge([$request], array_values($params));
+                    call_user_func_array([$controller, $action], $actionArgs);
                 }
             }
 

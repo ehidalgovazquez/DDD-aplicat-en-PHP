@@ -2,8 +2,6 @@
 
     use Doctrine\ORM\EntityManagerInterface;
 
-    $entityManagerFactory = require __DIR__.'/../../../config/doctrine.php';
-    
-    $entityManager=$entityManagerFactory();
+    $entityManager = require __DIR__.'/../../../config/doctrine.php';
 
     return $entityManager;

@@ -20,8 +20,17 @@ use App\Domain\Student\StudentId;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class StudentApiController {
+    private RequestAPI $request;
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(RequestAPI $request, EntityManagerInterface $entityManager)
+    {
+        $this->request = $request;
+        $this->entityManager = $entityManager;
+    }
+
     private function getEntityManager(): EntityManagerInterface {
-        return require __DIR__ . '/../../../config/doctrine.php';
+        return $this->entityManager;
     }
 
     public function index(): void {
@@ -33,18 +42,19 @@ final class StudentApiController {
             'id' => $student->id()->value(),
             'name' => $student->name(),
             'email' => $student->email(),
-            'course_id' => $student->courseId()
+            'course_id' => $student->courseId()?->value()
         ], $students);
 
         (new ResponseJson(200, "Llista d'estudiants", $data))->send();
     }
 
-    public function show(RequestAPI $request): void {
+    public function show(RequestAPI $request, ?string $id = null): void {
         $entityManager = $this->getEntityManager();
         $repository = new SqlStudentRepository($entityManager);
 
         $body = $request->getBody();
-        $student = $repository->find(new StudentId($body['id'] ?? ''));
+        $studentId = $id ?? $body['id'] ?? '';
+        $student = $repository->find(new StudentId($studentId));
 
         if (!$student) {
             (new ResponseJson(404, "Estudiant no trobat"))->send();
@@ -54,7 +64,7 @@ final class StudentApiController {
             'id' => $student->id()->value(),
             'name' => $student->name(),
             'email' => $student->email(),
-            'course_id' => $student->courseId()
+            'course_id' => $student->courseId()?->value()
         ]))->send();
     }
     
@@ -81,7 +91,7 @@ final class StudentApiController {
         }
     }
 
-    public function update(RequestAPI $request): void {
+    public function update(RequestAPI $request, ?string $id = null): void {
         $entityManager = $this->getEntityManager();
         $studentRepo = new SqlStudentRepository($entityManager);
         $courseRepo = new SqlCourseRepository($entityManager);
@@ -89,9 +99,10 @@ final class StudentApiController {
         try {
             $handler = new UpdateStudentHandler($studentRepo, $courseRepo);
             $body = $request->getBody();
+            $studentId = $id ?? $body['id'] ?? '';
             
             $handler->handle(new UpdateStudentCommand(
-                $body['id'] ?? '',
+                $studentId,
                 $body['name'] ?? '',
                 $body['email'] ?? '',
                 $body['course_id'] ?? null
@@ -103,13 +114,14 @@ final class StudentApiController {
         }
     }
 
-    public function delete(RequestAPI $request): void {
+    public function delete(RequestAPI $request, ?string $id = null): void {
         $entityManager = $this->getEntityManager();
         $repository = new SqlStudentRepository($entityManager);
         $handler = new DeleteStudentHandler($repository);
         $body = $request->getBody();
+        $studentId = $id ?? $body['id'] ?? '';
         try {
-            $handler->handle(new DeleteStudentCommand($body['id'] ?? ''));
+            $handler->handle(new DeleteStudentCommand($studentId));
             (new ResponseJson(200, "Estudiant eliminat correctament"))->send();
         } catch (\Exception $e) {
             (new ResponseJson(400, "Error: " . $e->getMessage()))->send();

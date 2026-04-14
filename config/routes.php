@@ -8,6 +8,11 @@
             'handler' => [StudentApiController::class, 'index']
         ],
         [
+            'method' => 'GET',
+            'path' => '/api/students/{id}',
+            'handler' => [StudentApiController::class, 'show']
+        ],
+        [
             'method'=> 'POST',
             'path' => '/api/students',
             'handler' => [StudentApiController::class, 'store']
