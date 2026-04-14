@@ -16,7 +16,7 @@ final class Subject
     #[ORM\Column(type: 'string')]
     private string $name;
 
-    #[ORM\Column(type: 'string', length: 36, nullable: true)]
+    #[ORM\Column(name: 'teacher_id', type: 'string', nullable: true)]
     private ?string $teacherId = null;
 
     public function __construct(SubjectId $id, string $name) {
