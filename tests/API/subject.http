@@ -1,0 +1,43 @@
+### Crear Subject
+POST http://localhost:8000/api/subjects
+Content-Type: application/json
+
+{
+    "id": "WEB-101",
+    "name": "Web Development",
+    "teacher_id": "TEA-001"
+}
+
+### Obtener Subject por ID
+GET http://localhost:8000/api/subjects/WEB-101
+
+### Lista de Subjects
+GET http://localhost:8000/api/subjects
+
+### Actualizar Subject
+PUT http://localhost:8000/api/subjects/WEB-101
+Content-Type: application/json
+
+{
+    "name": "Web Development Updated",
+    "teacher_id": "TEA-001"
+}
+
+### Assign Teacher a Subject
+POST http://localhost:8000/api/subjects/WEB-101/assign-teacher
+Content-Type: application/json
+
+{
+    "teacher_id": "TEA-001"
+}
+
+### Unassign Teacher de Subject
+POST http://localhost:8000/api/subjects/WEB-101/unassign-teacher
+Content-Type: application/json
+
+{
+    "teacher_id": "TEA-001"
+}
+
+### Eliminar Subject
+DELETE http://localhost:8000/api/subjects/WEB-101
