@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Controller;
 
 use App\Infrastructure\Http\Request;
-use App\Infrastructure\Persistence\Database;
 use App\Domain\Course\SqlCourseRepository;
 use App\Application\Course\CreateCourse\CreateCourseHandler;
 use App\Application\Course\CreateCourse\CreateCourseCommand;
@@ -12,13 +11,16 @@ use App\Application\Course\UpdateCourse\UpdateCourseCommand;
 use App\Application\Course\DeleteCourse\DeleteCourseHandler;
 use App\Application\Course\DeleteCourse\DeleteCourseCommand;
 use App\Domain\Course\CourseId;
-
+use Doctrine\ORM\EntityManagerInterface;
 
 final class CourseController {
-    
+    private function getEntityManager(): EntityManagerInterface {
+        return require __DIR__ . '/../../../config/doctrine.php';
+    }
+
     public function index(): void {
-        $pdo = Database::getConnection();
-        $repository = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $repository = new SqlCourseRepository($entityManager);
         
         $courses = $repository->all();
         include __DIR__ . '/../../templates/course/index.php';
@@ -29,8 +31,8 @@ final class CourseController {
     }
 
     public function store(Request $request): void {
-        $pdo = Database::getConnection();
-        $repository = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $repository = new SqlCourseRepository($entityManager);
         $handler = new CreateCourseHandler($repository);
 
         try {
@@ -53,8 +55,8 @@ final class CourseController {
     }
 
     public function edit(Request $request): void {
-        $pdo = Database::getConnection();
-        $courseRepo = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $courseRepo = new SqlCourseRepository($entityManager);
 
         $courseId = new CourseId($request->get('id'));
         $course = $courseRepo->find($courseId);
@@ -69,8 +71,8 @@ final class CourseController {
     }
 
     public function update(Request $request): void {
-        $pdo = Database::getConnection();
-        $courseRepo = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $courseRepo = new SqlCourseRepository($entityManager);
         $handler = new UpdateCourseHandler($courseRepo);
 
         try {
@@ -90,8 +92,8 @@ final class CourseController {
     }
 
     public function delete(Request $request): void {
-        $pdo = Database::getConnection();
-        $courseRepo = new SqlCourseRepository($pdo);
+        $entityManager = $this->getEntityManager();
+        $courseRepo = new SqlCourseRepository($entityManager);
         $handler = new DeleteCourseHandler($courseRepo);
 
         try {

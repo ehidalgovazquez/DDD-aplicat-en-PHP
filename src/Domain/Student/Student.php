@@ -18,8 +18,8 @@ final class Student {
     #[ORM\Column(type: 'string', unique: true)]
     private string $email;
 
-    #[ORM\Column(type: 'string', length: 36, nullable: true)]
-    private ?CourseId $courseId = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $courseId = null;
 
     public function __construct(StudentId $id, string $name, string $email) {
         $this->id = $id->value();

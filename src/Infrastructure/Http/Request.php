@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Http;
 
 final class Request
+
 {
     private array $params;
 
