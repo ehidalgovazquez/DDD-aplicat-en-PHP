@@ -1,0 +1,25 @@
+### Crear Course
+POST http://localhost:8000/api/courses
+Content-Type: application/json
+
+{
+    "id": "DAW",
+    "name": "Desenvolupament d'Aplicacions Web"
+}
+
+### Obtener Course por ID
+GET http://localhost:8000/api/courses/DAW
+
+### Lista de Courses
+GET http://localhost:8000/api/courses
+
+### Actualizar Course
+PUT http://localhost:8000/api/courses/DAW
+Content-Type: application/json
+
+{
+    "name": "DAW Updated"
+}
+
+### Eliminar Course
+DELETE http://localhost:8000/api/courses/DAW
