@@ -14,10 +14,6 @@ return [
     |
     */
 
-    'backend' => [
-        'url' => env('BACKEND_API_URL'),
-    ],
-    
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
@@ -37,6 +33,10 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
+    
+    'backend' => [
+        'url' => env('BACKEND_API_URL'),
     ],
 
 ];
