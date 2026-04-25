@@ -1,0 +1,652 @@
+{
+  "info": {
+    "_postman_id": "d075bac0-d4f3-4774-8964-e4b2656eb911",
+    "name": "DDD_SchoolManagement",
+    "description": "Colección completa para gestionar estudiantes, asignaturas, profesores y cursos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51938176",
+    "_collection_link": "https://go.postman.co/collection/51938176-d075bac0-d4f3-4774-8964-e4b2656eb911?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Student",
+      "item": [
+        {
+          "name": "Crea Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"STU-001\",\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@gmail.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/students",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtenir Student per ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/students/STU-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students",
+                "STU-001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Llista de Students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/students",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Updated\",\n    \"email\": \"john.updated@gmail.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/students/STU-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students",
+                "STU-001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enroll Student a Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"course_id\": \"DAW\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/students/STU-001/enroll",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students",
+                "STU-001",
+                "enroll"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unenroll Student de Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"course_id\": \"DAW\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/students/STU-001/unenroll",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students",
+                "STU-001",
+                "unenroll"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/students/STU-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "students",
+                "STU-001"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subject",
+      "item": [
+        {
+          "name": "Crear Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"WEB-101\",\n    \"name\": \"Web Development\",\n    \"teacher_id\": \"TEA-001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/subjects",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Subject por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/subjects/WEB-101",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects",
+                "WEB-101"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista de Subjects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/subjects",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Subject",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Web Development Updated\",\n    \"teacher_id\": \"TEA-001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/subjects/WEB-101",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects",
+                "WEB-101"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Teacher a Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"teacher_id\": \"TEA-001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/subjects/WEB-101/assign-teacher",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects",
+                "WEB-101",
+                "assign-teacher"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unassign Teacher de Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"teacher_id\": \"TEA-001\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/subjects/WEB-101/unassign-teacher",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects",
+                "WEB-101",
+                "unassign-teacher"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Subject",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/subjects/WEB-101",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "subjects",
+                "WEB-101"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Teacher",
+      "item": [
+        {
+          "name": "Crear Teacher",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"TEA-001\",\n    \"name\": \"Anna Mestre\",\n    \"email\": \"anna.mestre@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/teachers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "teachers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Teacher por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/teachers/TEA-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "teachers",
+                "TEA-001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista de Teachers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/teachers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "teachers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Teacher",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Anna Mestre Updated\",\n    \"email\": \"anna.mestre.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/teachers/TEA-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "teachers",
+                "TEA-001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Teacher",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/teachers/TEA-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "teachers",
+                "TEA-001"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Course",
+      "item": [
+        {
+          "name": "Crear Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"DAW\",\n    \"name\": \"Desenvolupament d'Aplicacions Web\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/courses",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "courses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Course por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/courses/DAW",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "courses",
+                "DAW"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista de Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/courses",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "courses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Course",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"DAW Updated\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/courses/DAW",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "courses",
+                "DAW"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Course",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/courses/DAW",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "courses",
+                "DAW"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

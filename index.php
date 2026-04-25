@@ -39,7 +39,6 @@ match ($path) {
     '/subject/update'   => $subjectController->update($request),
     '/subject/delete'   => $subjectController->delete($request),
     
-
     '/student'          => $studentController->index(),
     '/student/create'   => $studentController->create(),
     '/student/store'    => $studentController->store($request),
