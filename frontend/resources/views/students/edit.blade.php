@@ -9,8 +9,6 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-bold mb-4">Modificar Información del Estudiante</h3>
-
-                {{-- Asegúrate de que la acción del formulario apunte a tu ruta de actualización --}}
                 <form action="{{ route('students.update', $student['id']) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -37,7 +35,7 @@
                             <option value="">Seleccionar curso</option>
                             @foreach($courses['data'] ?? [] as $course)
                                 <option value="{{ $course['id'] }}" {{ old('course_id', $student['course_id'] ?? '') == $course['id'] ? 'selected' : '' }}>
-                                    {{ $course['name'] }}
+                                    {{ $course['id'] }} - {{ $course['name'] }}
                                 </option>
                             @endforeach
                         </select>
