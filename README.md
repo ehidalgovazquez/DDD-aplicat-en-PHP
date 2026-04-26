@@ -1,6 +1,5 @@
----
-**NOTE**
+> [!NOTE]
+> backend % php -S localhost:8000
 
-frontend % php artisan serve
-
----
+> [!NOTE]
+> frontend % php artisan serve
