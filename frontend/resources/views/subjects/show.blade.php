@@ -19,7 +19,7 @@
                     <span>{{ $subject['name'] ?? 'N/A' }}</span>
                 </div>
                 <div class="mb-4">
-                    <strong class="block text-gray-700">ID Teacher:</strong>
+                    <strong class="block text-gray-700">Profesor:</strong>
                     <span>{{ $subject['teacher_id'] ?? 'N/A' }}</span>
                 </div>
 
