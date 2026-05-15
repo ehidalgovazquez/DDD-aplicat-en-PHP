@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\OAuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -33,6 +34,16 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // ─── OAuth via backend ────────────────────────────────────────────────────
+    // 1. El frontend redirigeix al backend → Google
+    Route::get('auth/oauth/redirect', [OAuthController::class, 'redirect'])
+        ->name('oauth.redirect');
+
+    // 2. El backend retorna aquí amb el JWT un cop Google ha autenticat l'usuari
+    Route::get('auth/oauth/callback', [OAuthController::class, 'callback'])
+        ->name('oauth.callback');
+    // ─────────────────────────────────────────────────────────────────────────
 });
 
 Route::middleware('auth')->group(function () {

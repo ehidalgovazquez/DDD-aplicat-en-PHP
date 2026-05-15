@@ -4,7 +4,6 @@ namespace App\Infrastructure\Controller;
 
 use App\Application\Auth\Login\LoginCommand;
 use App\Application\Auth\Login\LoginHandler;
-use App\Domain\Auth\AuthRepository;
 use App\Infrastructure\Auth\OAuth\GoogleOAuthClient;
 use App\Infrastructure\Auth\Persistence\DoctrineAuthRepository;
 use App\Infrastructure\Auth\Token\JwtTokenGenerator;
@@ -17,11 +16,13 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  *  GET /auth/login    → redirects the user to Google's authorization page
  *  GET /auth/callback → receives the code from Google, issues our own JWT
+ *                       and redirects the frontend with the token in the URL
  */
 final class AuthController
 {
     private GoogleOAuthClient $oauthClient;
     private LoginHandler $loginHandler;
+    private string $frontendCallbackUrl;
 
     public function __construct(RequestAPI $request, EntityManagerInterface $em)
     {
@@ -32,6 +33,10 @@ final class AuthController
         $repository   = new DoctrineAuthRepository($em);
         $tokenGen     = new JwtTokenGenerator($_ENV['JWT_SECRET'] ?? 'change_me_in_env');
         $this->loginHandler = new LoginHandler($repository, $tokenGen);
+
+        // URL del frontend que recibirá el JWT tras el callback de Google
+        $this->frontendCallbackUrl = $_ENV['FRONTEND_OAUTH_CALLBACK_URL']
+            ?? 'http://localhost:8001/auth/oauth/callback';
     }
 
     /**
@@ -48,7 +53,8 @@ final class AuthController
     /**
      * GET /auth/callback
      * Google redirects here with ?code=... after the user grants access.
-     * We exchange the code, find-or-create the user, and return our JWT.
+     * We exchange the code, find-or-create the user, generate our JWT,
+     * and then redirect the frontend with the token as a query parameter.
      */
     public function callback(RequestAPI $request): void
     {
@@ -56,6 +62,7 @@ final class AuthController
 
         if ($code === null) {
             (new ResponseJson(400, 'Missing OAuth code'))->send();
+            return;
         }
 
         try {
@@ -69,10 +76,16 @@ final class AuthController
 
             $jwt = $this->loginHandler->handle($command);
 
-            (new ResponseJson(200, 'Login correcte', ['token' => $jwt]))->send();
+            // Redirigir al frontend con el JWT en la URL
+            $redirectUrl = $this->frontendCallbackUrl . '?token=' . urlencode($jwt);
+            header('Location: ' . $redirectUrl);
+            exit;
 
         } catch (\RuntimeException $e) {
-            (new ResponseJson(500, 'OAuth error: ' . $e->getMessage()))->send();
+            // Redirigir al frontend con el error
+            $errorUrl = $this->frontendCallbackUrl . '?error=' . urlencode($e->getMessage());
+            header('Location: ' . $errorUrl);
+            exit;
         }
     }
 }

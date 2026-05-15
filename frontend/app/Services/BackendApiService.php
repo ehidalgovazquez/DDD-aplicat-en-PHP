@@ -5,22 +5,31 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class BackendApiService
 {
     protected string $baseUrl;
 
     public function __construct() {
-        $this->baseUrl = config('services.backend.url', env('BACKEND_API_URL', 'http://localhost:8000'));
+        $this->baseUrl = config('services.backend.url', env('BACKEND_API_URL', 'http://localhost:8000/api'));
     }
 
     private function request(string $method, string $endpoint, array $data = []): Response {
         $url = "{$this->baseUrl}/{$endpoint}";
-        
-        $response = Http::withHeaders([
-            'Accept' => 'application/json',
+
+        $headers = [
+            'Accept'       => 'application/json',
             'Content-Type' => 'application/json',
-        ])->send($method, $url, [
+        ];
+
+        // Si l'usuari ha iniciat sessió via OAuth, afegim el JWT al header
+        $jwt = Session::get('backend_jwt');
+        if ($jwt) {
+            $headers['Authorization'] = 'Bearer ' . $jwt;
+        }
+
+        $response = Http::withHeaders($headers)->send($method, $url, [
             'json' => $data
         ]);
 
