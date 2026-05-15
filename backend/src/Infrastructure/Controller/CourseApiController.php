@@ -11,6 +11,7 @@ use App\Application\Course\UpdateCourse\UpdateCourseHandler;
 use App\Application\Course\UpdateCourse\UpdateCourseCommand;
 use App\Application\Course\DeleteCourse\DeleteCourseHandler;
 use App\Application\Course\DeleteCourse\DeleteCourseCommand;
+use App\Infrastructure\Middleware\AuthMiddleware;
 use App\Domain\Course\CourseId;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -59,6 +60,8 @@ final class CourseApiController {
     }
 
     public function store(RequestAPI $request): void {
+        AuthMiddleware::check();
+
         $entityManager = $this->getEntityManager();
         $repository = new SqlCourseRepository($entityManager);
         $handler = new CreateCourseHandler($repository);

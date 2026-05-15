@@ -1,7 +1,9 @@
 <?php
     use App\Infrastructure\Controller\StudentApiController;
     use App\Infrastructure\Controller\SubjectApiController;
-    use App\Infrastructure\Controller\CourseApiController;use App\Infrastructure\Controller\TeacherApiController;    
+    use App\Infrastructure\Controller\CourseApiController;
+    use App\Infrastructure\Controller\TeacherApiController;
+    use App\Infrastructure\Controller\AuthController;
     return [
         // Student API routes
         [
@@ -129,5 +131,17 @@
             'method' => 'POST',
             'path' => '/api/subjects/{id}/unassign-teacher',
             'handler' => [SubjectApiController::class, 'unassignTeacher']
-        ]
+        ],
+
+        // Auth API routes
+        [
+            'method'  => 'GET',
+            'path'    => '/auth/login',
+            'handler' => [AuthController::class, 'login'],
+        ],
+        [
+            'method'  => 'GET',
+            'path'    => '/auth/callback',
+            'handler' => [AuthController::class, 'callback'],
+        ],
     ];

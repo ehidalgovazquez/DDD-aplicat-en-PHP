@@ -16,6 +16,7 @@ use App\Application\Subject\AssignTeacher\AssignTeacherHandler;
 use App\Application\Subject\AssignTeacher\AssignTeacherCommand;
 use App\Application\Subject\UnassignTeacher\UnassignTeacherHandler;
 use App\Application\Subject\UnassignTeacher\UnassignTeacherCommand;
+use App\Infrastructure\Middleware\AuthMiddleware;
 use App\Domain\Subject\SubjectId;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -66,6 +67,8 @@ final class SubjectApiController {
     }
     
     public function store(RequestAPI $request): void {
+        AuthMiddleware::check();
+        
         $entityManager = $this->getEntityManager();
         $subjectRepo = new SqlSubjectRepository($entityManager);
         $teacherRepo = new SqlTeacherRepository($entityManager);

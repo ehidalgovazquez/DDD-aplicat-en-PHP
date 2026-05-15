@@ -16,6 +16,7 @@ use App\Application\Student\EnrollStudent\EnrollStudentHandler;
 use App\Application\Student\EnrollStudent\EnrollStudentCommand;
 use App\Application\Student\UnenrollStudent\UnenrollStudentHandler;
 use App\Application\Student\UnenrollStudent\UnenrollStudentCommand;
+use App\Infrastructure\Middleware\AuthMiddleware;
 use App\Domain\Student\StudentId;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -68,6 +69,8 @@ final class StudentApiController {
     }
     
     public function store(RequestAPI $request): void {
+        AuthMiddleware::check();
+
         $entityManager = $this->getEntityManager();
         $repository = new SqlStudentRepository($entityManager);
         $repositoryCourse = new SqlCourseRepository($entityManager);

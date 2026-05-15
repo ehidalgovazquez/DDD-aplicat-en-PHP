@@ -10,7 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->safeLoad();
 
-$paths = [__DIR__ . '/../src'];
+$paths = [__DIR__ . '/../src/Domain'];
 $isDevMode = true;
 
 $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);

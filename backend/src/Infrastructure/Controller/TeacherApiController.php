@@ -11,6 +11,7 @@ use App\Application\Teacher\UpdateTeacher\UpdateTeacherHandler;
 use App\Application\Teacher\UpdateTeacher\UpdateTeacherCommand;
 use App\Application\Teacher\DeleteTeacher\DeleteTeacherHandler;
 use App\Application\Teacher\DeleteTeacher\DeleteTeacherCommand;
+use App\Infrastructure\Middleware\AuthMiddleware;
 use App\Domain\Teacher\TeacherId;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -62,6 +63,8 @@ final class TeacherApiController {
     }
 
     public function store(RequestAPI $request): void {
+        AuthMiddleware::check();
+        
         $entityManager = $this->getEntityManager();
         $repository = new SqlTeacherRepository($entityManager);
         $handler = new CreateTeacherHandler($repository);
