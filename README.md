@@ -4,5 +4,5 @@
 > También se puede inicializar con Docker
 
 > [!IMPORTANT]
-> Email     dddphptest@gmail.com
+> Email     dddphptest@gmail.com <br>
 > Password  vurxo8-ninzys-rUcjyg
