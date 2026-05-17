@@ -1,6 +1,6 @@
 > [!NOTE]
-> backend % php -S localhost:8000
-> frontend % php artisan serve --port=8001
+> backend % php -S localhost:8000 <br>
+> frontend % php artisan serve --port=8001 <br>
 > También se puede inicializar con Docker
 
 > [!IMPORTANT]
