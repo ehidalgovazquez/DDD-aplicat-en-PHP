@@ -3,3 +3,6 @@
 
 > [!NOTE]
 > frontend % php artisan serve --port=8001
+
+> [!IMPORTANT]
+> Se puede hacer inicializar con Docker
