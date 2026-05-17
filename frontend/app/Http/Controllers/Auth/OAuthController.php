@@ -21,7 +21,7 @@ class OAuthController extends Controller
      */
     public function redirect(): RedirectResponse
     {
-        $backendLoginUrl = config('services.backend.base_url', env('BACKEND_BASE_URL', 'http://localhost:8000'))
+        $backendLoginUrl = env('BACKEND_PUBLIC_URL', 'http://localhost:8000')
             . '/auth/login';
 
         return redirect()->away($backendLoginUrl);

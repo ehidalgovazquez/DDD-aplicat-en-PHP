@@ -1,0 +1,72 @@
+services:
+
+  # ─────────────────────────────────────────────
+  # Backend: PHP puro + Doctrine ORM + SQLite
+  # Expone la API REST en el puerto 8000
+  # ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ddd_backend
+    ports:
+      - "8000:8000"
+    environment:
+      DB_DRIVER: pdo_sqlite
+      DB_PATH: database.sqlite
+      FRONTEND_OAUTH_CALLBACK_URL: http://localhost:8001/auth/oauth/callback
+      GOOGLE_CLIENT_ID: 735309825107-l1n9v6fc696q4h2r1iju3hfok3gk60p3.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: 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
+      GOOGLE_REDIRECT_URI: http://localhost:8000/auth/callback
+      JWT_SECRET: svKDWcfytRTHoUpDY9fMpfbtqIUhRAQrQvafEPQHXOU=
+    volumes:
+      # Persist the SQLite database across container restarts
+      - backend_db:/var/www/backend
+    networks:
+      - ddd_network
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # Frontend: Laravel + Blade + Tailwind
+  # Consume la API del backend, puerto 8001
+  # ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ddd_frontend
+    ports:
+      - "8001:8001"
+    environment:
+      APP_NAME: Laravel
+      APP_ENV: production
+      APP_KEY: ${APP_KEY:-base64:chmr1sToCLUOOzg61+WXmh31ul/q30FLK8uD5JCIINE=}
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8001
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/frontend/database/database.sqlite
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+      # URL interna (container-to-container) para llamadas del backend
+      BACKEND_API_URL: http://backend:8000/api
+      BACKEND_BASE_URL: http://backend:8000
+      BACKEND_PUBLIC_URL: http://localhost:8000
+    volumes:
+      # Persist the SQLite database across container restarts
+      - frontend_db:/var/www/frontend/database
+      - frontend_storage:/var/www/frontend/storage
+    depends_on:
+      - backend
+    networks:
+      - ddd_network
+    restart: unless-stopped
+
+networks:
+  ddd_network:
+    driver: bridge
+
+volumes:
+  backend_db:
+  frontend_db:
+  frontend_storage:
