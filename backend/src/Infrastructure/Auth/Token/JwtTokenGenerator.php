@@ -21,8 +21,7 @@ final class JwtTokenGenerator
         $this->ttlSeconds = $ttlSeconds;
     }
 
-    public function generate(User $user): string
-    {
+    public function generate(User $user): string {
         $header = $this->base64url(json_encode([
             'alg' => 'HS256',
             'typ' => 'JWT',
