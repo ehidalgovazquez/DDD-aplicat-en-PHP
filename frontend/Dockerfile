@@ -29,7 +29,7 @@ RUN composer install --optimize-autoloader --no-interaction --no-scripts
 # Copy package files for node layer caching
 COPY package.json package-lock.json* ./
 
-RUN npm ci
+RUN npm install
 
 # Copy the full application
 COPY . .
